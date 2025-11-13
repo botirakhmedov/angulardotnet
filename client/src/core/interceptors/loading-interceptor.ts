@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { BusyService } from '../services/busy-service';
 import { delay, finalize, of, tap } from 'rxjs';
 
-const cashe = new Map<string, HttpEvent<unknown>>();
+const cache = new Map<string, HttpEvent<unknown>>();
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const busyService = inject(BusyService);
@@ -13,12 +13,25 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     return paramString ? `${url}?${paramString}` : url;
   }
 
+  
+  const invalidateCache = (urlPattern: string) => {
+    for(const key of cache.keys()){
+      if(key.includes(urlPattern)){
+        cache.delete(key);
+        console.log(`Cache invalidated for: ${key}`);
+      }
+    }
+  }
   const cacheKey = generateCacheKey(req.url, req.params);
 
+  if(req.method.includes('POST') && req.url.includes('/likes')){
+    invalidateCache('/likes');
+  }
+
   if(req.method === 'GET'){
-    const casheResponse = cashe.get(cacheKey);
-    if(casheResponse){
-      return of(casheResponse);
+    const cacheResponse = cache.get(cacheKey);
+    if(cacheResponse){
+      return of(cacheResponse);
     }
   }
 
@@ -27,7 +40,7 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     delay(500),
     tap(response => {
-      cashe.set(cacheKey, response)
+      cache.set(cacheKey, response)
     }),
     finalize(() => {
       busyService.idle();

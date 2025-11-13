@@ -1,1 +1,35 @@
-{}
+{
+    "restoreTerminals.runOnStartup": true,
+    "restoreTerminals.terminals": [
+        {
+            "splitTerminals": [
+                {
+                    "name": "dotnet",
+                    "commands": [
+                        "cd API"
+                    ]
+                }
+            ]
+        },
+        {
+            "splitTerminals": [
+                {
+                    "name": "angular",
+                    "commands": [
+                        "cd client"
+                    ]
+                }
+            ]
+        },
+        {
+            "splitTerminals": [
+                {
+                    "name": "bash",
+                    "commands": [
+                        "cd client"
+                    ]
+                }
+            ]
+        }
+    ]
+}
