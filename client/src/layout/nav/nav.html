@@ -24,6 +24,9 @@
             <a routerLink="/messages" routerLinkActive="text-accent" [routerLinkActiveOptions]="{exact:true}">
                 Messages
             </a>
+            <a *appHasRole="['Admin', 'Moderator']" routerLink="/admin" routerLinkActive="text-accent" [routerLinkActiveOptions]="{exact:true}">
+                Admin
+            </a>
             }
             <a routerLink="/errors" routerLinkActive="text-accent">Errors</a>
         </nav>
